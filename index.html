@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Finanzas 2026</title>
+<style>
+:root{
+  --bg:#11140f; --panel:#1a1e16; --panel2:#222719; --line:#333a28;
+  --txt:#e8ead9; --muted:#9aa089; --gold:#e8b84b; --green:#88b56a;
+  --red:#d98a6a; --blue:#7fa8c9;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+body{padding-bottom:env(safe-area-inset-bottom)}
+.wrap{max-width:520px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
+header{padding:18px 18px 10px}
+.kicker{font-size:11px;letter-spacing:2px;color:var(--gold);font-weight:700}
+h1{font-size:22px;margin-top:2px}
+nav{display:flex;gap:6px;padding:0 12px 10px;overflow-x:auto;scrollbar-width:none}
+nav::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;padding:8px 14px;border-radius:20px;background:var(--panel);
+  color:var(--muted);border:1px solid var(--line);font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
+.tab.active{background:var(--panel2);color:var(--txt);border-color:var(--gold)}
+.tab.add{color:var(--green)}
+.tab.add.active{color:var(--gold)}
+main{flex:1;padding:6px 14px 30px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
+.kpis{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 8px;text-align:center}
+.kpi .lbl{font-size:10px;color:var(--muted);letter-spacing:.5px}
+.kpi .val{font-size:16px;font-weight:700;margin-top:4px}
+.green{color:var(--green)} .red{color:var(--red)} .gold{color:var(--gold)} .blue{color:var(--blue)}
+.row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:none}
+.row .nm{font-size:14px} .row .am{font-size:14px;font-weight:600}
+.sub{font-size:11px;color:var(--muted)}
+.sectit{font-size:12px;letter-spacing:1px;color:var(--muted);font-weight:700;margin:14px 0 4px;text-transform:uppercase}
+.bar{height:6px;background:var(--panel2);border-radius:4px;overflow:hidden;margin-top:5px}
+.bar i{display:block;height:100%;border-radius:4px}
+label{display:block;font-size:12px;color:var(--muted);margin:10px 0 4px;font-weight:600}
+input,select,textarea{width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:10px;
+  padding:11px;color:var(--txt);font-size:15px;font-family:inherit}
+select{appearance:none}
+.seg{display:flex;gap:6px;margin-top:4px}
+.seg button{flex:1;padding:11px;border-radius:10px;border:1px solid var(--line);background:var(--panel2);
+  color:var(--muted);font-weight:700;font-size:14px;cursor:pointer}
+.seg button.on-ing{background:rgba(136,181,106,.18);color:var(--green);border-color:var(--green)}
+.seg button.on-gas{background:rgba(217,138,106,.18);color:var(--red);border-color:var(--red)}
+.btn{width:100%;padding:13px;border-radius:11px;border:none;background:var(--gold);color:#1a1500;
+  font-weight:800;font-size:15px;cursor:pointer;margin-top:16px}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--txt)}
+.btn.sm{padding:9px;font-size:13px;margin-top:8px}
+.mini{display:flex;gap:8px;margin-top:8px}
+.mini .btn{margin-top:0}
+.empty{text-align:center;color:var(--muted);padding:30px 10px;font-size:14px}
+.mv{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--line)}
+.mv .l .d{font-size:14px} .mv .l .m{font-size:11px;color:var(--muted)}
+.mv .r{display:flex;align-items:center;gap:10px}
+.mv .x{color:var(--red);font-size:18px;cursor:pointer;padding:2px 6px}
+.pill{display:inline-block;font-size:10px;padding:2px 7px;border-radius:10px;background:var(--panel2);color:var(--muted);margin-top:2px}
+.tot{display:flex;justify-content:space-between;padding:10px 0;font-weight:700;border-top:2px solid var(--line);margin-top:6px}
+.note{font-size:11px;color:var(--muted);line-height:1.5;margin-top:8px}
+.mselect{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;scrollbar-width:none}
+.mselect::-webkit-scrollbar{display:none}
+.mselect button{flex:0 0 auto;padding:6px 12px;border-radius:16px;background:var(--panel2);border:1px solid var(--line);color:var(--muted);font-size:12px;font-weight:600;cursor:pointer}
+.mselect button.active{background:var(--gold);color:#1a1500;border-color:var(--gold)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="kicker">FINANZAS PERSONALES · 2026</div>
+    <h1>Tablero financiero</h1>
+  </header>
+  <nav id="nav"></nav>
+  <main id="main"></main>
+</div>
+
+<script>
+/* ===== CONFIG ===== */
+const MESES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+const CATS_ING = ['Sueldo / Haberes','Transferencias recibidas','Devoluciones / Reintegros'];
+const CATS_GAS = ['Supermercado / Alimentos','Transporte (Didi / Uber)','Delivery / PedidosYa','Ropa / Calzado',
+  'Entretenimiento / Streaming','Eventos / Recitales','Pagos servicios (Claro/luz)','Gimnasio / Deporte',
+  'Barbería / Peluquería','Recarga SUBE','Restaurantes / Salidas','Compras online (ML)','Farmacia / Salud',
+  'Tarjeta Visa (pago)','Tarjeta Amex (pago)','Transferencias enviadas','Compra de dólares',
+  'Inversiones (IOL / títulos)','Viajes / Transporte aéreo','Otros pagos'];
+const CATS_TARJ = ['Ropa / Calzado','Compras online (ML)','Entretenimiento/Streaming','Eventos / Recitales',
+  'Viajes / Transporte aéreo','Supermercado','Impuestos tarjeta','Restaurantes','Otros'];
+
+const K_MOV = 'fin2026:movs:v1';      // ingresos y gastos
+const K_TARJ = 'fin2026:tarj:v1';     // consumos de tarjeta
+const K_VIAJE = 'fin2026:viaje:v1';   // parámetros plan viaje
+
+/* ===== STATE ===== */
+let tab = 'resumen';
+let mesSel = MESES[new Date().getMonth()];
+let movs = load(K_MOV, []);
+let tarj = load(K_TARJ, []);
+let viaje = load(K_VIAJE, {tc:'', ahorro:'', costo:''});
+// form temporales
+let f = {tipo:'gas', mes:mesSel, cat:CATS_GAS[0], monto:'', desc:'', fecha:''};
+let ft = {mes:mesSel, tarjeta:'VISA', cat:CATS_TARJ[0], monto:'', desc:'', fecha:''};
+
+function load(k,def){try{const v=localStorage.getItem(k);return v?JSON.parse(v):def}catch(e){return def}}
+function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+function fmt(n){n=+n||0;const s=n<0?'-':'';n=Math.abs(n);
+  if(n>=1e6)return s+'$'+(n/1e6).toFixed(2)+'M';
+  if(n>=1e3)return s+'$'+Math.round(n/1e3)+'k';return s+'$'+Math.round(n)}
+function fmtFull(n){return '$'+Math.round(+n||0).toLocaleString('es-AR')}
+
+/* ===== TABS ===== */
+const TABS=[{id:'resumen',l:'Resumen'},{id:'agregar',l:'+ Agregar',c:'add'},
+  {id:'tarjetas',l:'Tarjetas'},{id:'proy',l:'Proyección'},{id:'viaje',l:'Punta Cana'}];
+
+function renderNav(){
+  document.getElementById('nav').innerHTML = TABS.map(t=>
+    `<button class="tab ${t.c||''} ${tab===t.id?'active':''}" onclick="go('${t.id}')">${t.l}</button>`).join('');
+}
+function go(id){tab=id;render()}
+
+/* ===== AGG ===== */
+function aggMes(mes){
+  let ing=0,gas=0;
+  movs.forEach(m=>{if(m.mes===mes){if(m.tipo==='ing')ing+=+m.monto;else gas+=+m.monto}});
+  return {ing,gas,bal:ing-gas};
+}
+function aggCat(mes,tipo){
+  const cats=tipo==='ing'?CATS_ING:CATS_GAS;const o={};
+  cats.forEach(c=>o[c]=0);
+  movs.forEach(m=>{if(m.mes===mes&&m.tipo===tipo)o[m.cat]=(o[m.cat]||0)+ +m.monto});
+  return o;
+}
+
+/* ===== RENDER ===== */
+function render(){renderNav();const m=document.getElementById('main');m.innerHTML=VIEWS[tab]()}
+
+function mselect(cur,fn){
+  return `<div class="mselect">`+MESES.map(x=>
+    `<button class="${x===cur?'active':''}" onclick="${fn}('${x}')">${x}</button>`).join('')+`</div>`;
+}
+function setMes(x){mesSel=x;render()}
+
+const VIEWS={
+  resumen(){
+    const a=aggMes(mesSel);
+    const ic=aggCat(mesSel,'ing'), gc=aggCat(mesSel,'gas');
+    const gmax=Math.max(1,...Object.values(gc));
+    const gasRows=Object.entries(gc).filter(([,v])=>v>0).sort((a,b)=>b[1]-a[1]);
+    const ingRows=Object.entries(ic).filter(([,v])=>v>0).sort((a,b)=>b[1]-a[1]);
+    return mselect(mesSel,'setMes')+`
+    <div class="kpis">
+      <div class="kpi"><div class="lbl">INGRESOS</div><div class="val green">${fmt(a.ing)}</div></div>
+      <div class="kpi"><div class="lbl">GASTOS</div><div class="val red">${fmt(a.gas)}</div></div>
+      <div class="kpi"><div class="lbl">BALANCE</div><div class="val ${a.bal>=0?'green':'red'}">${fmt(a.bal)}</div></div>
+    </div>
+    <div class="card">
+      <div class="sectit">Ingresos</div>
+      ${ingRows.length?ingRows.map(([c,v])=>
+        `<div class="row"><span class="nm">${c}</span><span class="am green">${fmtFull(v)}</span></div>`).join(''):
+        '<div class="empty">Sin ingresos cargados este mes</div>'}
+    </div>
+    <div class="card">
+      <div class="sectit">Gastos por categoría</div>
+      ${gasRows.length?gasRows.map(([c,v])=>
+        `<div style="padding:8px 0;border-bottom:1px solid var(--line)">
+          <div class="row" style="border:none;padding:0 0 3px">
+            <span class="nm">${c}</span><span class="am red">${fmtFull(v)}</span></div>
+          <div class="bar"><i style="width:${v/gmax*100}%;background:var(--red)"></i></div>
+        </div>`).join(''):
+        '<div class="empty">Sin gastos cargados este mes</div>'}
+    </div>`;
+  },
+
+  agregar(){
+    const cats=f.tipo==='ing'?CATS_ING:CATS_GAS;
+    if(!cats.includes(f.cat))f.cat=cats[0];
+    return `<div class="card">
+      <div class="sectit">Nuevo movimiento</div>
+      <label>Tipo</label>
+      <div class="seg">
+        <button class="${f.tipo==='ing'?'on-ing':''}" onclick="setF('tipo','ing')">Ingreso</button>
+        <button class="${f.tipo==='gas'?'on-gas':''}" onclick="setF('tipo','gas')">Gasto</button>
+      </div>
+      <label>Mes</label>
+      <select onchange="setF('mes',this.value)">${MESES.map(x=>`<option ${x===f.mes?'selected':''}>${x}</option>`).join('')}</select>
+      <label>Categoría</label>
+      <select onchange="setF('cat',this.value)">${cats.map(c=>`<option ${c===f.cat?'selected':''}>${c}</option>`).join('')}</select>
+      <label>Monto ($)</label>
+      <input id="i-monto" type="number" inputmode="decimal" placeholder="0" value="${f.monto}" oninput="f.monto=this.value">
+      <label>Descripción (opcional)</label>
+      <input id="i-desc" type="text" placeholder="Detalle" value="${f.desc}" oninput="f.desc=this.value">
+      <label>Fecha (opcional)</label>
+      <input id="i-fecha" type="text" inputmode="numeric" placeholder="dd/mm" value="${f.fecha}" oninput="f.fecha=this.value">
+      <button class="btn" onclick="addMov()">Agregar movimiento</button>
+    </div>
+    <div class="card">
+      <div class="sectit">Movimientos (${movs.length})</div>
+      ${movs.length?movs.slice(0,40).map(m=>
+        `<div class="mv">
+          <div class="l"><div class="d">${m.desc||m.cat}</div>
+            <div class="m">${m.mes}${m.fecha?' · '+m.fecha:''} · ${m.cat}</div></div>
+          <div class="r"><span class="am ${m.tipo==='ing'?'green':'red'}">${m.tipo==='ing'?'+':'-'}${fmtFull(m.monto)}</span>
+            <span class="x" onclick="delMov('${m.id}')">×</span></div>
+        </div>`).join(''):'<div class="empty">Todavía no cargaste movimientos</div>'}
+    </div>
+    <div class="card">
+      <div class="sectit">Respaldo</div>
+      <div class="note">Tus datos viven solo en este dispositivo. Exportá cada tanto para no perderlos o para pasármelos al Excel.</div>
+      <div class="mini">
+        <button class="btn ghost sm" onclick="expData()">Exportar respaldo</button>
+        <button class="btn ghost sm" onclick="document.getElementById('imp').click()">Importar</button>
+      </div>
+      <input id="imp" type="file" accept=".json" style="display:none" onchange="impData(this)">
+    </div>`;
+  },
+
+  tarjetas(){
+    if(!CATS_TARJ.includes(ft.cat))ft.cat=CATS_TARJ[0];
+    const byCat={};CATS_TARJ.forEach(c=>byCat[c]=0);
+    let totV=0,totA=0;
+    tarj.forEach(t=>{byCat[t.cat]=(byCat[t.cat]||0)+ +t.monto;
+      if(t.tarjeta==='VISA')totV+=+t.monto;else totA+=+t.monto});
+    const catRows=Object.entries(byCat).filter(([,v])=>v>0).sort((a,b)=>b[1]-a[1]);
+    const cmax=Math.max(1,...Object.values(byCat));
+    return `<div class="kpis">
+      <div class="kpi"><div class="lbl">VISA</div><div class="val blue">${fmt(totV)}</div></div>
+      <div class="kpi"><div class="lbl">AMEX</div><div class="val gold">${fmt(totA)}</div></div>
+      <div class="kpi"><div class="lbl">TOTAL</div><div class="val">${fmt(totV+totA)}</div></div>
+    </div>
+    <div class="card">
+      <div class="sectit">Cargar consumo de tarjeta</div>
+      <label>Tarjeta</label>
+      <div class="seg">
+        <button class="${ft.tarjeta==='VISA'?'on-ing':''}" onclick="setFt('tarjeta','VISA')">VISA</button>
+        <button class="${ft.tarjeta==='AMEX'?'on-gas':''}" onclick="setFt('tarjeta','AMEX')">AMEX</button>
+      </div>
+      <label>Mes de cierre</label>
+      <select onchange="setFt('mes',this.value)">${MESES.map(x=>`<option ${x===ft.mes?'selected':''}>${x}</option>`).join('')}</select>
+      <label>Categoría</label>
+      <select onchange="setFt('cat',this.value)">${CATS_TARJ.map(c=>`<option ${c===ft.cat?'selected':''}>${c}</option>`).join('')}</select>
+      <label>Descripción</label>
+      <input type="text" placeholder="Ej: NIKE (cuota 5/9)" value="${ft.desc}" oninput="ft.desc=this.value">
+      <label>Monto ($)</label>
+      <input type="number" inputmode="decimal" placeholder="0" value="${ft.monto}" oninput="ft.monto=this.value">
+      <label>Fecha (opcional)</label>
+      <input type="text" placeholder="dd/mm" value="${ft.fecha}" oninput="ft.fecha=this.value">
+      <button class="btn" onclick="addTarj()">Agregar consumo</button>
+    </div>
+    <div class="card">
+      <div class="sectit">Consumo por categoría</div>
+      ${catRows.length?catRows.map(([c,v])=>
+        `<div style="padding:8px 0;border-bottom:1px solid var(--line)">
+          <div class="row" style="border:none;padding:0 0 3px"><span class="nm">${c}</span><span class="am gold">${fmtFull(v)}</span></div>
+          <div class="bar"><i style="width:${v/cmax*100}%;background:var(--gold)"></i></div>
+        </div>`).join(''):'<div class="empty">Cargá tus consumos para ver el detalle</div>'}
+    </div>
+    <div class="card">
+      <div class="sectit">Detalle (${tarj.length})</div>
+      ${tarj.length?tarj.slice(0,50).map(t=>
+        `<div class="mv">
+          <div class="l"><div class="d">${t.desc||t.cat}</div>
+            <div class="m">${t.tarjeta} · ${t.mes}${t.fecha?' · '+t.fecha:''} · ${t.cat}</div></div>
+          <div class="r"><span class="am">${fmtFull(t.monto)}</span>
+            <span class="x" onclick="delTarj('${t.id}')">×</span></div>
+        </div>`).join(''):'<div class="empty">Sin consumos cargados</div>'}
+    </div>`;
+  },
+
+  proy(){
+    // proyección = promedio de meses con datos, extrapolado a los que faltan
+    const conDatos=MESES.filter(m=>{const a=aggMes(m);return a.ing>0||a.gas>0});
+    const futuros=MESES.filter(m=>!conDatos.includes(m));
+    let promIng=0,promGas=0;
+    if(conDatos.length){
+      conDatos.forEach(m=>{const a=aggMes(m);promIng+=a.ing;promGas+=a.gas});
+      promIng/=conDatos.length;promGas/=conDatos.length;
+    }
+    const proyIng=promIng*futuros.length, proyGas=promGas*futuros.length;
+    let realIng=0,realGas=0;
+    conDatos.forEach(m=>{const a=aggMes(m);realIng+=a.ing;realGas+=a.gas});
+    const totIng=realIng+proyIng, totGas=realGas+proyGas;
+    return `<div class="card">
+      <div class="sectit">Proyección automática</div>
+      <div class="note">Se calcula promediando tus meses cargados (${conDatos.length||0}) y estimando los ${futuros.length} restantes. Cargá movimientos para alimentarla.</div>
+    </div>
+    <div class="kpis">
+      <div class="kpi"><div class="lbl">PROM. ING/MES</div><div class="val green">${fmt(promIng)}</div></div>
+      <div class="kpi"><div class="lbl">PROM. GAS/MES</div><div class="val red">${fmt(promGas)}</div></div>
+      <div class="kpi"><div class="lbl">PROM. BAL/MES</div><div class="val ${promIng-promGas>=0?'green':'red'}">${fmt(promIng-promGas)}</div></div>
+    </div>
+    <div class="card">
+      <div class="sectit">Estimación año completo</div>
+      <div class="row"><span class="nm">Ingresos reales (${conDatos.length} m)</span><span class="am green">${fmtFull(realIng)}</span></div>
+      <div class="row"><span class="nm">Ingresos proyectados (${futuros.length} m)</span><span class="am green">${fmtFull(proyIng)}</span></div>
+      <div class="row"><span class="nm">Gastos reales</span><span class="am red">${fmtFull(realGas)}</span></div>
+      <div class="row"><span class="nm">Gastos proyectados</span><span class="am red">${fmtFull(proyGas)}</span></div>
+      <div class="tot"><span>Balance año estimado</span><span class="${totIng-totGas>=0?'green':'red'}">${fmtFull(totIng-totGas)}</span></div>
+    </div>`;
+  },
+
+  viaje(){
+    const tc=+viaje.tc||0, ahorro=+viaje.ahorro||0, costo=+viaje.costo||0;
+    const usd= tc>0 ? costo/tc : 0;
+    const meses= ahorro>0 ? Math.ceil(costo/ahorro) : 0;
+    let plan='';
+    if(tc>0 && ahorro>0 && costo>0){
+      let rep=0,acum=0;const usdMes=ahorro/tc;
+      for(let i=1;i<=meses;i++){
+        acum=Math.min(costo,acum+ahorro);
+        rep=Math.min(usd,rep+usdMes);
+        plan+=`<div class="row"><span class="nm">Mes ${i}</span>
+          <span class="sub">USD repuestos ${rep.toFixed(0)} · faltan ${(usd-rep).toFixed(0)}</span></div>`;
+      }
+    }
+    return `<div class="card">
+      <div class="sectit">✈️ Plan de viaje · Punta Cana</div>
+      <div class="note">Modelo de reposición de dólares gastados en cuotas. Cargá los parámetros y se calcula solo.</div>
+      <label>Tipo de cambio (USD → $)</label>
+      <input type="number" inputmode="decimal" placeholder="Ej: 1430" value="${viaje.tc}" oninput="setViaje('tc',this.value)">
+      <label>Ahorro mensual ($)</label>
+      <input type="number" inputmode="decimal" placeholder="Ej: 1000000" value="${viaje.ahorro}" oninput="setViaje('ahorro',this.value)">
+      <label>Costo total del viaje ($)</label>
+      <input type="number" inputmode="decimal" placeholder="Ej: 4000000" value="${viaje.costo}" oninput="setViaje('costo',this.value)">
+    </div>
+    <div class="kpis">
+      <div class="kpi"><div class="lbl">USD TOTALES</div><div class="val gold">${usd?usd.toFixed(0):'—'}</div></div>
+      <div class="kpi"><div class="lbl">MESES REPO.</div><div class="val">${meses||'—'}</div></div>
+      <div class="kpi"><div class="lbl">COSTO</div><div class="val">${costo?fmt(costo):'—'}</div></div>
+    </div>
+    <div class="card">
+      <div class="sectit">Reposición mensual</div>
+      ${plan||'<div class="empty">Completá los parámetros arriba</div>'}
+    </div>`;
+  }
+};
+
+/* ===== ACTIONS ===== */
+function setF(k,v){f[k]=v;if(k==='tipo'){const c=v==='ing'?CATS_ING:CATS_GAS;f.cat=c[0]}render()}
+function setFt(k,v){ft[k]=v;render()}
+function setViaje(k,v){viaje[k]=v;save(K_VIAJE,viaje);
+  // recalcular sin perder foco del input: solo refrescamos KPIs/plan
+  const a=+viaje.tc||0,b=+viaje.ahorro||0,c=+viaje.costo||0;
+  if(a&&b&&c){render()}
+}
+function addMov(){
+  if(!f.monto||+f.monto<=0){alert('Ingresá un monto válido');return}
+  movs.unshift({id:Date.now()+''+Math.random().toString(36).slice(2,6),
+    tipo:f.tipo,mes:f.mes,cat:f.cat,monto:+f.monto,desc:f.desc.trim(),fecha:f.fecha.trim()});
+  save(K_MOV,movs);f.monto='';f.desc='';f.fecha='';render();
+}
+function delMov(id){movs=movs.filter(m=>m.id!==id);save(K_MOV,movs);render()}
+function addTarj(){
+  if(!ft.monto||+ft.monto<=0){alert('Ingresá un monto válido');return}
+  tarj.unshift({id:Date.now()+''+Math.random().toString(36).slice(2,6),
+    tarjeta:ft.tarjeta,mes:ft.mes,cat:ft.cat,monto:+ft.monto,desc:ft.desc.trim(),fecha:ft.fecha.trim()});
+  save(K_TARJ,tarj);ft.monto='';ft.desc='';ft.fecha='';render();
+}
+function delTarj(id){tarj=tarj.filter(t=>t.id!==id);save(K_TARJ,tarj);render()}
+
+function expData(){
+  const data={v:1,exportado:new Date().toISOString(),movs,tarj,viaje};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='respaldo_finanzas_'+new Date().toISOString().slice(0,10)+'.json';a.click();
+}
+function impData(input){
+  const file=input.files[0];if(!file)return;
+  const r=new FileReader();
+  r.onload=()=>{try{
+    const d=JSON.parse(r.result);
+    if(d.movs)movs=d.movs;if(d.tarj)tarj=d.tarj;if(d.viaje)viaje=d.viaje;
+    save(K_MOV,movs);save(K_TARJ,tarj);save(K_VIAJE,viaje);
+    alert('Respaldo importado correctamente');render();
+  }catch(e){alert('Archivo inválido')}};
+  r.readAsText(file);
+}
+
+render();
+</script>
+</body>
+</html>
